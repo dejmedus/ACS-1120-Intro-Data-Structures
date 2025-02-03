@@ -31,8 +31,14 @@ class Dictogram(dict):
     def sample(self):
         """Return a word from this histogram, randomly sampled by weighting
         each word's probability of being chosen by its observed frequency."""
-        sorted_list = sorted(self.items(), key=lambda x: x[1])
-        return sorted_list[-1][0]
+
+        random_sampling_range = random.uniform(0, self.tokens)
+        cumulative = 0
+
+        for word, count in self.items():
+            cumulative += count
+            if cumulative > random_sampling_range:
+                return word
 
 
 def print_histogram(word_list):
