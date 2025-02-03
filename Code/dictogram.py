@@ -20,16 +20,19 @@ class Dictogram(dict):
 
     def add_count(self, word, count=1):
         """Increase frequency count of given word by given count amount."""
-        # TODO: Increase word frequency by count
+        self[word] = self.get(word, 0) + count
+        self.tokens += count
+        self.types = len(self)
 
     def frequency(self, word):
         """Return frequency count of given word, or 0 if word is not found."""
-        # TODO: Retrieve word frequency count
+        return self.get(word, 0)
 
     def sample(self):
         """Return a word from this histogram, randomly sampled by weighting
         each word's probability of being chosen by its observed frequency."""
-        # TODO: Randomly choose a word based on its frequency in this histogram
+        sorted_list = sorted(self.items(), key=lambda x: x[1])
+        return sorted_list[-1][0]
 
 
 def print_histogram(word_list):
@@ -74,11 +77,12 @@ def print_histogram_samples(histogram):
         sampled_freq = samples / samples_hist.tokens
         # Calculate error between word's sampled and observed frequency
         error = (sampled_freq - observed_freq) / observed_freq
-        color = green if abs(error) < 0.05 else yellow if abs(error) < 0.1 else red
+        color = green if abs(error) < 0.05 else yellow if abs(
+            error) < 0.1 else red
         print('| {!r:<9} '.format(word)
-            + '| {:>4} = {:>6.2%} '.format(count, observed_freq)
-            + '| {:>4} = {:>6.2%} '.format(samples, sampled_freq)
-            + '| {}{:>+7.2%}{} |'.format(color, error, reset))
+              + '| {:>4} = {:>6.2%} '.format(count, observed_freq)
+              + '| {:>4} = {:>6.2%} '.format(samples, sampled_freq)
+              + '| {}{:>+7.2%}{} |'.format(color, error, reset))
     print(divider)
     print()
 
