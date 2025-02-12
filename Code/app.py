@@ -1,6 +1,8 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask
-
+import random
+from dictogram import Dictogram
+from rearrange import rearrange
 
 app = Flask(__name__)
 
@@ -10,8 +12,17 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    """Route that returns a web page containing the generated text."""
-    return "<p>TODO: Return a word here!</p>"
+    words = ["apple", "banana", "cherry", "date", "elderberry",
+             "fig", "grape", "honeydew", "kiwi", "lemon"]
+    dictogram = Dictogram(words)
+
+    items_list = list(dictogram.items())
+    random_sample = random.sample(items_list, min(5, len(items_list)))
+    words_list = [word for word, freq in random_sample]
+    sentence = rearrange(words_list)
+
+    # """Route that returns a web page containing the generated text."""
+    return f"<p>{sentence}</p>"
 
 
 if __name__ == "__main__":

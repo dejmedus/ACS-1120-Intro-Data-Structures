@@ -1,11 +1,6 @@
-import sys
 import random
 
 
-words = sys.argv[1:]
-
-random.shuffle(words)
-
-rearranged = " ".join(words)
-
-print(rearranged)
+def rearrange(words):
+    random.shuffle(words)
+    return " ".join(words)
