@@ -1,8 +1,8 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask
 import random
-from dictogram import Dictogram
-from rearrange import rearrange
+from .dictogram import Dictogram
+from .rearrange import rearrange
 
 app = Flask(__name__)
 
