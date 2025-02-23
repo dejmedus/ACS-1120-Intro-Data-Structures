@@ -1,28 +1,27 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask
-import random
-from .dictogram import Dictogram
-from .rearrange import rearrange
+from random import randrange
+
+from utils.tokens import tokenize
+from utils.markov import MarkovChain
+
+
+DATA = 'data/corpus.txt'
 
 app = Flask(__name__)
-
-# TODO: Initialize your histogram, hash table, or markov chain here.
-# Any code placed here will run only once, when the server starts.
+source = open(DATA).read()
+tokens = tokenize(source)
+chain = MarkovChain(tokens)
 
 
 @app.route("/")
 def home():
-    words = ["apple", "banana", "cherry", "date", "elderberry",
-             "fig", "grape", "honeydew", "kiwi", "lemon"]
-    dictogram = Dictogram(words)
+    """Route that returns a web page containing the generated text."""
+    start_index = randrange(len(tokens))
+    start_word = tokens[start_index]
+    sentence = chain.random_walk(start_word)
 
-    items_list = list(dictogram.items())
-    random_sample = random.sample(items_list, min(5, len(items_list)))
-    words_list = [word for word, freq in random_sample]
-    sentence = rearrange(words_list)
-
-    # """Route that returns a web page containing the generated text."""
-    return f"<p>{sentence}</p>"
+    return f"<h2>{sentence}</h2>"
 
 
 if __name__ == "__main__":
