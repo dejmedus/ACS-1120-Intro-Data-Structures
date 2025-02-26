@@ -109,10 +109,14 @@ class HashTable(object):
         bucket_index = self._bucket_index(key)
         bucket = self.buckets[bucket_index]
 
-        for k, v in bucket.items():
-            if k == key:
-                bucket.delete(k)
-                break
+        node = bucket.head
+        while node:
+            # self.data = data
+            # self.next = None
+            if node.data[0] == key:
+                node.data = (key, value)
+                return
+            node = node.next
 
         bucket.append((key, value))
 
@@ -129,7 +133,7 @@ class HashTable(object):
 
         for k, v in bucket.items():
             if k == key:
-                bucket.delete(k)
+                bucket.delete((k, v))
                 return
         raise KeyError('Key not found: {}'.format(key))
 
