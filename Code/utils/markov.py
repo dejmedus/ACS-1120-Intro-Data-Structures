@@ -30,4 +30,33 @@ class MarkovChain(dict):
             path.append(next_token)
             node = self[next_token]
 
-        return " ".join(path)
+        return self.spell(path)
+
+    def spell(self, path):
+        spell = " ".join(path)
+        def low_num(): return str(random.randint(1, 9))
+        def high_num(): return str(random.randint(10, 120))
+        def dice_roll(): return f"{low_num()}+{low_num()}d"
+        def ordinal(): return f"{random.randint(4, 12)}th"
+
+        while "<negnum>" in spell:
+            spell = spell.replace("<negnum>", f"-{low_num()}", 1)
+        while "<roll>" in spell:
+            spell = spell.replace("<roll>", dice_roll(), 1)
+        while "<lownum>" in spell:
+            spell = spell.replace("<lownum>", low_num(), 1)
+        while "<highnum>" in spell:
+            spell = spell.replace("<highnum>", high_num(), 1)
+        while "<ordinal>" in spell:
+            spell = spell.replace("<ordinal>", ordinal(), 1)
+
+        spell = spell.replace(" <end>", ". ")
+        spell = spell.strip()
+
+        sentences = spell.split(".")
+        if len(sentences) > 1:
+            spell = sentences[0]
+
+        spell = spell.capitalize()
+
+        return spell
