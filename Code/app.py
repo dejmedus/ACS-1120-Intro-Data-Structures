@@ -7,9 +7,10 @@ from utils.markov import MarkovChain
 
 
 DATA = 'data/corpus.txt'
-# removed words 'This', 'The', 'At', 'An', 'A', 'You', 'When', 'Your', 'Arcs', 'Positive', 'Bane', 'Primal', 'Infuse'
-IN_WORDS = ['Creates', 'Flames', 'Reduces', 'Blasts', 'Gives', 'Cures', 'Delivers', 'Wards', 'Imbues', 'Damages', 'Gestures', 'Allows', 'Instills', 'Harnesses', 'Increases',
-            'Transmutes', 'Summons', 'Grants', 'Charms', 'Induces', 'Fires', 'Conjures', 'Enchants', 'Telekinetically', 'Covers', 'Makes', 'Enemies']
+# removed words 'This', 'The', 'At', 'An', 'A', 'You', 'When', 'Your', 'Arcs', 'Positive', 'Bane', 'Primal', 'Infuse', 'Induces'
+IN_WORDS = ['creates', 'flames', 'reduces', 'blasts', 'gives', 'cures', 'delivers', 'wards', 'imbues', 'damages', 'gestures', 'allows', 'instills', 'harnesses', 'increases',
+            'transmutes', 'summons', 'grants', 'charms', 'fires', 'conjures', 'enchants', 'telekinetically', 'covers', 'makes', 'enemies']
+
 
 app = Flask(__name__)
 source = open(DATA).read()
@@ -20,6 +21,7 @@ chain = MarkovChain(tokens)
 @app.route("/")
 def home():
     """Route that returns a web page containing the generated text."""
+
     start_word = choice(IN_WORDS)
     spell = chain.random_walk(start_word)
 
