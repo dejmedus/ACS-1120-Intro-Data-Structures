@@ -1,34 +1,44 @@
 import random
 
+from data.in_words import IN_WORDS
+
 
 class MarkovChain(dict):
-    def __init__(self, tokens):
+    def __init__(self, tokens, n=2):
         super().__init__()
-
         self.tokens = tokens
+        self.n = n
         self.chain_tokens()
 
     def chain_tokens(self):
-        for i, token in enumerate(self.tokens):
-            if i + 1 < len(self.tokens):
-                next_word = self.tokens[i + 1]
-                if token not in self:
-                    self[token] = {}
-                self[token][next_word] = self[token].get(next_word, 0) + 1
+        for i in range(len(self.tokens) - self.n):
+            token = tuple(self.tokens[i:i + self.n])
+            next_token = self.tokens[i + self.n]
 
-    def random_walk(self, start_word, len=20):
-        if start_word not in self:
-            raise Exception("No start word", start_word)
+            if token not in self:
+                self[token] = {}
 
-        path = [start_word]
-        node = self[start_word]
+            self[token][next_token] = self[token].get(next_token, 0) + 1
+
+    def random_walk(self, len=20):
+        start_words = random.choice(IN_WORDS[self.n])
+        start_words = tuple(start_words.lower().split())
+
+        if start_words not in self:
+            raise Exception("No start words", start_words)
+
+        path = list(start_words)
+        curr_tup = start_words
+
         for _ in range(len):
+            if curr_tup not in self:
+                break
             # https://stackoverflow.com/questions/3679694/a-weighted-version-of-random-choice
-            options = list(node.keys())
-            next_token = random.choices(options, weights=node.values())[0]
+            next_token = random.choices(
+                list(self[curr_tup].keys()), weights=self[curr_tup].values())[0]
 
             path.append(next_token)
-            node = self[next_token]
+            curr_tup = tuple(path[-self.n:])
 
         return self.spell(path)
 
@@ -50,12 +60,6 @@ class MarkovChain(dict):
         while "<ordinal>" in spell:
             spell = spell.replace("<ordinal>", ordinal(), 1)
 
-        # spell = spell.replace(" <end>", ". ")
         spell = spell.replace(" <end>", " ")
         spell = spell.strip()
-
-        # sentences = spell.split(".")
-        # if len(sentences) > 1:
-        #     spell = sentences[0]
-
         return spell.capitalize()

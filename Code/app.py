@@ -1,29 +1,22 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask, render_template
-from random import choice
 
 from utils.tokens import tokenize
-from utils.markov import MarkovChain
+from utils.markov_higher_order import MarkovChain
 
-
-DATA = 'data/corpus.txt'
-# removed words 'This', 'The', 'At', 'An', 'A', 'You', 'When', 'Your', 'Arcs', 'Positive', 'Bane', 'Primal', 'Infuse', 'Induces'
-IN_WORDS = ['creates', 'flames', 'reduces', 'blasts', 'gives', 'cures', 'delivers', 'wards', 'imbues', 'damages', 'gestures', 'allows', 'instills', 'harnesses', 'increases',
-            'transmutes', 'summons', 'grants', 'charms', 'fires', 'conjures', 'enchants', 'telekinetically', 'covers', 'makes', 'enemies']
-
+DATA = 'data/dungeons-and-dragons.txt'
 
 app = Flask(__name__)
 source = open(DATA).read()
 tokens = tokenize(source)
-chain = MarkovChain(tokens)
+chain = MarkovChain(tokens, 2)
 
 
 @app.route("/")
 def home():
     """Route that returns a web page containing the generated text."""
 
-    start_word = choice(IN_WORDS)
-    spell = chain.random_walk(start_word)
+    spell = chain.random_walk()
 
     return render_template('index.html', spell=spell)
 
